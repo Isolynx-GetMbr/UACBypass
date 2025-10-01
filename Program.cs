@@ -1,3 +1,6 @@
+// rewrited the whole thing in my phone, so there might be issues related to formats of the code.
+// might fix it later
+
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
