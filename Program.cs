@@ -1,5 +1,5 @@
 // rewrited the whole thing in my phone, so there might be issues related to formats of the code.
-// might fix it later
+// might fix it later, but the code still works, don't worry (dw)
 
 using System;
 using System.Runtime.InteropServices;
