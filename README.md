@@ -1,9 +1,9 @@
 # UACBypass (Registry Hijacking)
 
-This uses both fodhelper and eventwvr method to bypass UAC varying on the windows versions. 
+This uses both fodhelper and eventvwr method to bypass UAC varying on the windows versions. 
 
 ### Forums
-- [EventWvr method (< Win10 2016 builds)](https://www.fortinet.com/blog/threat-research/offense-and-defense-a-tale-of-two-sides-bypass-uac)
+- [Eventvwr method (< Win10 2016 builds)](https://www.fortinet.com/blog/threat-research/offense-and-defense-a-tale-of-two-sides-bypass-uac)
 - [Fodhelper method (> Win10)](https://www.linkedin.com/pulse/uac-bypass-using-fodhelperexe-shivam-gupta-ra0xc)
 
 >[!TIP]
