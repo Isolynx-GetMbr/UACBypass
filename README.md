@@ -9,7 +9,7 @@ of windows which can be abused by malwares to execute the executable without UAC
 
 >[!TIP]
 > **Wow64DisableWow64FsRedirection** and **Wow64RevertWow64FsRedirection** is used to prevent redirection to **SysWOW64** directory when trying to access **System32** especially if your process is *32-bit*. Since both *fodhelper* and *eventvwr* doesn't exists on **SysWOW64** somehow.
-</br>
+
 >[!CAUTION]
 > This is published **ONLY** for cybersecurity defense purposes. Please **don't** use it in such illegal ways!
 
