@@ -1,7 +1,7 @@
 # UACBypass (Registry Hijacking)
 
 This uses both fodhelper and eventvwr method to bypass UAC varying on the windows versions, since both of them are one of the trusted binaries
-of windows which can be abused by malwares to execute the executable without UAC prompt.
+of windows which can be abused by malwares to execute the executable which is the malware itself without the UAC prompt.
 
 ### Forums
 - [Eventvwr method (< Win10 2016 builds)](https://www.fortinet.com/blog/threat-research/offense-and-defense-a-tale-of-two-sides-bypass-uac)
