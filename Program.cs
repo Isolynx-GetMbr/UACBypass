@@ -25,7 +25,6 @@ namespace UACBypassExample
 
         struct UACPath
         {
-
             public string RegPath;
             public string FilePath;
 
@@ -34,7 +33,6 @@ namespace UACBypassExample
                  this.RegPath = RegPath;
                  this.FilePath = FilePath;
             }
-
         }
 
         public static void Bypass()
@@ -87,7 +85,6 @@ namespace UACBypassExample
               finally
               {
 		            // Reverting is somewhat important.
-
                     if (!Imports.Wow64RevertWow64FsRedirection(ov))
                         Console.WriteLine("Failed to revert WoW64FsRedirection.");
               }
