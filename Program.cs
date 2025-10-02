@@ -1,14 +1,11 @@
-// rewrited the whole thing in my phone, so there might be issues related to formats of the code.
-// might fix it later, but the code still works, don't worry (dw)
-
-using System;
-using System.Runtime.InteropServices;
-using Microsoft.Win32;
+using System;	
+using System.Runtime.InteropServices;	// to import the libraries
+using Microsoft.Win32;					// for Registry editing
 using System.Diagnostics;
-using System.IO; 
-using System.Security.Principal;
+using System.IO; 						// to check if fodhelper exists in System32
+using System.Security.Principal;		// to check if your application is elevated.
 using System.Collections.Generic;
-using System.Windows.Forms;
+using System.Windows.Forms;				// where the Application class is located, which can be useful for returning the current path of your own application (Application.ExecutablePath).
 
 namespace UACBypassExample
 {
@@ -22,7 +19,6 @@ namespace UACBypassExample
       
      internal class UAC
      {
-
         struct UACPath
         {
             public string RegPath;
