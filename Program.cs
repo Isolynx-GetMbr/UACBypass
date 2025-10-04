@@ -65,15 +65,21 @@ namespace UACBypassExample
 					    // Open the process to start your program in higher privileges 
 					    // since both fodhelper and eventwvr will open your executable 
 					    // that is located in the registry upon execution. 
-					   
+					    
 					    // In older Windows versions (< Windows 10). executing eventvwr will look
 					    // for the registry where the MMC executable path is located, once found
 					    // it will open MMC with eventvwr.msc to start the UI (with elevation ofc). 
 					    // In this case, you can hijack the registry to start your program in higher privileges.
 					  
-					    // But in newer versions of Windows, MMC path is now hardcoded to eventwvr itself,
+					    // But in newer versions of Windows, MMC path is now hardcoded to eventvwr itself,
 					    // so hijacking the registry and starting the program is useless. So that's why fodhelper
 					    // method is used as an alternative for newer windows versions.
+
+					    // Also as I said earlier, both eventvwr and fodhelper are trusted binaries in Windows
+					    // so they can be executed with elevation without UAC prompt. But well the registry 
+					    // "DelegateExecute" in fodhelper method is needed, otherwise it will ask the UAC prompt
+					    // for elevation.
+					  
                         Process.Start(new ProcessStartInfo()
                         {
                             FileName = upath[isWin10up ? 0 : 1].FilePath,
