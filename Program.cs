@@ -119,7 +119,7 @@ namespace UACBypassExample
              }
              else
              {
-                 MessageBox.Show("this process isn't  elevated");
+                 MessageBox.Show("this process isn't elevated");
                  // if not, perform a UAC bypass
                  UAC.Bypass();
              }
